@@ -26,8 +26,9 @@ const STAR_START_X = -100;
 var deltaTime = 0;
 var starDate = Date.now();
 var starSpawnTimer = 0;
-var starSpawnerInterval = 1;
-var starSpawnBatchSize = 20;
+var starSpawnerInterval = .25;
+var starSpawnBatchSize = 50;
+const FRAME_RATE_TARGET = 60;
 
 //Frame rate counter variables
 var filterStrength = 20;
@@ -216,7 +217,7 @@ function spawnStars(){
 	starSpawnTimer += deltaTime;
 	if(starSpawnTimer >= starSpawnerInterval){
 		starSpawnTimer = 0;
-		if(1000/frameTime > 55){
+		if(1000/frameTime > FRAME_RATE_TARGET){
 			console.log("spawning " + starSpawnBatchSize + " stars..." + "FPS: " + fpsOut);
 			for(var kk = 0; kk < starSpawnBatchSize; kk++){
 				addStar(0, utils.getRandomScreenXorY(display.height));
