@@ -14,11 +14,12 @@ const CANVAS_OFFSET = 20;
 var backdropColor = "black";
 var displayBorderColor = "grey";
 var starSize = 1;  //updated with screen size
+var starSizeRatio = 500;
 const DEFAULT_NUM_STARS = 500;
 var numStars = DEFAULT_NUM_STARS;
 var starfield = [];
-const MAX_CROSSING_TIME = 400;
-const MIN_CROSSING_TIME = 150;
+const MAX_CROSSING_TIME = 600;
+const MIN_CROSSING_TIME = 200;
 var starMaxSpeed = display.width/MIN_CROSSING_TIME; //updates with screen size
 var starMinSpeed = display.width/MAX_CROSSING_TIME; //updates with screen size
 const STAR_START_X = -100;
@@ -26,8 +27,8 @@ const STAR_START_X = -100;
 var deltaTime = 0;
 var starDate = Date.now();
 var starSpawnTimer = 0;
-var starSpawnerInterval = .25;
-var starSpawnBatchSize = 50;
+var starSpawnerInterval = .01; //in seconds
+var starSpawnBatchSize = 1;
 const FRAME_RATE_TARGET = 60;
 
 //Frame rate counter variables
@@ -96,7 +97,7 @@ function fitDisplayToWindow(){
 	}
 
 	//change screen-size dependant metrics;
-	starSize = Math.max(display.width/500, 1);
+	starSize = Math.max(display.width/starSizeRatio, 1);
 	starMaxSpeed = display.width/MIN_CROSSING_TIME;
 	starMinSpeed = display.width/MAX_CROSSING_TIME;
 }
