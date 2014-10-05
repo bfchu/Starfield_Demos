@@ -69,6 +69,7 @@ function Star(xPos,yPos,xVel,yVel,starWidth,starHeight){
 Star.prototype.draw = function(){
 	ctx.save(); //preserves the current context references.
 	ctx.fillStyle = this.color;
+	ctx.globalAlpha = this.vx/starMaxSpeed;
 	ctx.fillRect(this.x,this.y,this.width,this.height);
 	ctx.restore();  //restores the context from saved reference.
 }
