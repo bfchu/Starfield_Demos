@@ -14,7 +14,7 @@ const CANVAS_OFFSET = 20;
 var backdropColor = "black";
 var displayBorderColor = "grey";
 var starSize = 1;  //updated with screen size
-const DEFAULT_NUM_STARS = 200;
+const DEFAULT_NUM_STARS = 500;
 var numStars = DEFAULT_NUM_STARS;
 var starfield = [];
 const MAX_CROSSING_TIME = 400;
@@ -64,12 +64,13 @@ function Star(xPos,yPos,xVel,yVel,starWidth,starHeight){
 	this.width = starWidth;  //expressed as a portion of screen width.
 	this.height = starHeight //expressed as a portion of screen height.
 	this.color = "white";
+	this.alpha = this.vx/starMaxSpeed;
 }
 
 Star.prototype.draw = function(){
 	ctx.save(); //preserves the current context references.
 	ctx.fillStyle = this.color;
-	ctx.globalAlpha = this.vx/starMaxSpeed;
+	ctx.globalAlpha = this.alpha;
 	ctx.fillRect(this.x,this.y,this.width,this.height);
 	ctx.restore();  //restores the context from saved reference.
 }
