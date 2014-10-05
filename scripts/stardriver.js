@@ -25,6 +25,9 @@ const STAR_START_X = -100;
 
 var deltaTime = 0;
 var starDate = Date.now();
+var starSpawnTimer = 0;
+var starSpawnerInterval = 1;
+var starSpawnBatchSize = 20;
 
 //Frame rate counter variables
 var filterStrength = 20;
@@ -104,6 +107,7 @@ function drawFrame(){
 
 	//HUD
 	drawBorder();
+	drawStarCounter();
 	drawFrameRate();
 }
 
@@ -141,6 +145,13 @@ function drawStars(){
 	}
 }
 
+function drawStarCounter(){
+	ctx.save();
+	ctx.font = "16px Arial";
+	ctx.fillStyle = "white";
+	ctx.fillText("Stars: " + starfield.length, display.width/2,starSize*10);
+}
+
 
 // @citation: Frame counting code taken from http://stackoverflow.com/questions/4787431/check-fps-in-js
 function drawFrameRate(){
@@ -157,20 +168,28 @@ function drawFrameRate(){
 }
 setInterval(function(){fpsOut = (1000/frameTime).toFixed(1) + " fps";}, 1000);
 
+
 ///////////////////////////////////
 //	DEMO SETUP AND UPDATE LOOP 	//
 /////////////////////////////////
 
 function generateStarfield(){
-
 	for(var ii = 0; ii < numStars; ii++){
-		var star = new Star(utils.getRandomScreenXorY(display.width), 
-							utils.getRandomScreenXorY(display.height), 
-							utils.getRandomFloat(starMinSpeed,starMaxSpeed), 
-							0, starSize, starSize)
-		starfield.push(star);
+		addStar(utils.getRandomScreenXorY(display.width), utils.getRandomScreenXorY(display.height));
 	}
-	console.log("Generated stars successfully: " + starfield.length);
+	//console.log("Generated inital stars successfully: " + starfield.length);
+}
+
+function addStar(startX,startY){
+	var star = new Star(startX,startY, 
+						utils.getRandomFloat(starMinSpeed,starMaxSpeed), 
+						0, starSize, starSize)
+	starfield.push(star);
+}
+
+function removeStar(){ //pull a star that is off screen out of the array;
+	//find offscreen star,
+	//remove star using starfield.splice();
 }
 
 //program execution entry point
@@ -186,17 +205,36 @@ function onStart(){
 
 
 function updateStars(){
+	//update each star's position
 	for(var ii = 0, stars = starfield.length; ii<stars; ii++){
 		starfield[ii].update();
 	}
 }
 
+function spawnStars(){
+	//check to see if we can add more stars, or if some need to be removed.
+	starSpawnTimer += deltaTime;
+	if(starSpawnTimer >= starSpawnerInterval){
+		starSpawnTimer = 0;
+		if(1000/frameTime > 55){
+			console.log("spawning " + starSpawnBatchSize + " stars..." + "FPS: " + fpsOut);
+			for(var kk = 0; kk < starSpawnBatchSize; kk++){
+				addStar(0, utils.getRandomScreenXorY(display.height));
+			}
+		}
+	} else {
+		//removeStar();
+	}
+}
 
 
 function update(){
 	window.requestAnimationFrame(update, display);
 	deltaTime = (Date.now() - starDate ) / 1000;
+
 	updateStars();
+	spawnStars();
+
 	//
 	drawFrame();
 	starDate = Date.now();
