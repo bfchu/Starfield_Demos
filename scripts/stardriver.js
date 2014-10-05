@@ -22,18 +22,24 @@ const MAX_CROSSING_TIME = 600;
 const MIN_CROSSING_TIME = 200;
 var starMaxSpeed = display.width/MIN_CROSSING_TIME; //updates with screen size
 var starMinSpeed = display.width/MAX_CROSSING_TIME; //updates with screen size
-const STAR_START_X = -100;
+var starStartX = -100;
+var offScreenStarBuffer = 100;
 
+const SPAWNER_ENABLED = true;
 var deltaTime = 0;
 var starDate = Date.now();
 var starSpawnTimer = 0;
-var starSpawnerInterval = .01; //in seconds
-var starSpawnBatchSize = 1;
+var starSpawnerInterval = .02; //in seconds
+var starSpawnBatchSize = 5;
 const FRAME_RATE_TARGET = 60;
+var isStable = false;
+var unstableTime = 0;
+var unstableTimeTollerance = 60;
 
 //Frame rate counter variables
 var filterStrength = 20;
 var frameTime = 0, lastLoop = new Date, thisLoop;
+var currentFPS = 0;
 var fpsOut = 0;
 
 //////////////////////////
@@ -79,8 +85,8 @@ Star.prototype.draw = function(){
 Star.prototype.update = function(){
 	this.x += this.vx;
 	this.y += this.vy;
-	if(this.x > display.width){
-		this.x = STAR_START_X;
+	if(this.x > display.width + offScreenStarBuffer){
+		this.x = starStartX;
 		this.y = utils.getRandomScreenXorY(display.height);
 	}
 }
@@ -164,13 +170,14 @@ function drawFrameRate(){
 
 	var thisFrameTime = (thisLoop=new Date) - lastLoop;
 	frameTime+= (thisFrameTime - frameTime) / filterStrength;
+	currentFPS = 1000/frameTime;
 	lastLoop = thisLoop;
 
 	ctx.font = "16px Arial";
 	ctx.fillText(fpsOut, starSize*10, starSize*10);
 	ctx.restore();
 }
-setInterval(function(){fpsOut = (1000/frameTime).toFixed(1) + " fps";}, 1000);
+setInterval(function(){fpsOut = (currentFPS).toFixed(1) + " fps";}, 1000);
 
 
 ///////////////////////////////////
@@ -193,7 +200,24 @@ function addStar(startX,startY){
 
 function removeStar(){ //pull a star that is off screen out of the array;
 	//find offscreen star,
-	//remove star using starfield.splice();
+	var targetStar = findOffScreenStar();
+	//remove star
+	deathStarLaser(targetStar);
+}
+
+function deathStarLaser(targetID){ //removes given star.
+	starfield.splice(targetID,1); //write own splice for better optimization later.
+}
+
+function findOffScreenStar(){
+	var starID = 0, length = starfield.length;
+	for(;starID < length; ++starID){
+		if( starfield[starID].x > display.width ||
+			starfield[starID].x < 0){
+			return starID;
+		}
+	}
+	return starID;
 }
 
 //program execution entry point
@@ -217,17 +241,28 @@ function updateStars(){
 
 function spawnStars(){
 	//check to see if we can add more stars, or if some need to be removed.
-	starSpawnTimer += deltaTime;
-	if(starSpawnTimer >= starSpawnerInterval){
-		starSpawnTimer = 0;
-		if(1000/frameTime > FRAME_RATE_TARGET){
-			console.log("spawning " + starSpawnBatchSize + " stars..." + "FPS: " + fpsOut);
-			for(var kk = 0; kk < starSpawnBatchSize; kk++){
-				addStar(0, utils.getRandomScreenXorY(display.height));
+	if(!isStable){
+		starSpawnTimer += deltaTime;
+		unstableTime++;
+
+		if(starSpawnTimer > starSpawnerInterval){
+			starSpawnTimer = 0;
+			if(currentFPS > FRAME_RATE_TARGET){
+				//console.log("spawning " + starSpawnBatchSize + " stars..." + "FPS: " + fpsOut);
+				for(var kk = 0; kk < starSpawnBatchSize; kk++){
+					addStar(0, utils.getRandomScreenXorY(display.height));
+				}
+				unstableTime = 0;
+			} else{
+				//console.log("removing a star");
+				removeStar();
 			}
 		}
-	} else {
-		//removeStar();
+		console.log("unstableTime: " + unstableTime);
+		if(unstableTime > unstableTimeTollerance){
+			isStable = true;
+			removeStar();
+		} 
 	}
 }
 
