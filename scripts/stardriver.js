@@ -18,8 +18,8 @@ var starSizeRatio = 500;
 const DEFAULT_NUM_STARS = 500;
 var numStars = DEFAULT_NUM_STARS;
 var starfield = [];
-const MAX_CROSSING_TIME = 600;
-const MIN_CROSSING_TIME = 200;
+const MAX_CROSSING_TIME = 800;
+const MIN_CROSSING_TIME = 300;
 var starMaxSpeed = display.width/MIN_CROSSING_TIME; //updates with screen size
 var starMinSpeed = display.width/MAX_CROSSING_TIME; //updates with screen size
 var starStartX = -100;
@@ -34,13 +34,30 @@ var starSpawnBatchSize = 5;
 const FRAME_RATE_TARGET = 60;
 var isStable = false;
 var unstableTime = 0;
-var unstableTimeTollerance = 60;
+var unstableTimeTollerance = 30;
 
 //Frame rate counter variables
 var filterStrength = 20;
 var frameTime = 0, lastLoop = new Date, thisLoop;
 var currentFPS = 0;
 var fpsOut = 0;
+
+var currentMode;
+
+var simpleMode = {};
+simpleMode.onStart = function(){
+	//resize the screen.
+	fitDisplayToWindow();
+	//generate stars
+	generateStarfield();
+}
+simpleMode.update = function(){
+	updateStars();
+	spawnStars();
+}
+simpleMode.exit = function(){
+	starfield = [];
+}
 
 //////////////////////////
 //// EVENT LISTENERS ////
@@ -222,11 +239,8 @@ function findOffScreenStar(){
 
 //program execution entry point
 function onStart(){
-	//resize the screen.
-	fitDisplayToWindow();
-	//generate stars
-	generateStarfield();
-	//begin update loop.
+	currentMode = simpleMode;
+	currentMode.onStart();
 	update();
 }
 
@@ -271,8 +285,7 @@ function update(){
 	window.requestAnimationFrame(update, display);
 	deltaTime = (Date.now() - starDate ) / 1000;
 
-	updateStars();
-	spawnStars();
+	currentMode.update();
 
 	//
 	drawFrame();
