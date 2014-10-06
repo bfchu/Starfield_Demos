@@ -42,6 +42,7 @@ var frameTime = 0, lastLoop = new Date, thisLoop;
 var currentFPS = 0;
 var fpsOut = 0;
 
+//// demo mode FSM ////
 var currentMode;
 
 var simpleMode = {};
@@ -55,8 +56,34 @@ simpleMode.update = function(){
 	updateStars();
 	spawnStars();
 }
-simpleMode.exit = function(){
+simpleMode.onExit = function(){
 	starfield = [];
+}
+
+var fancyMode = {};
+fancyMode.onStart = function(){
+	//resize the screen.
+	fitDisplayToWindow();
+	//generate stars
+	generateStarfield();
+}
+fancyMode.update = function(){
+	updateStars();
+	spawnStars();
+}
+fancyMode.onExit = function(){
+	starfield = [];
+}
+
+
+function changeDemoMode(){
+	currentMode.onExit();
+	if(currentMode == simpleMode){
+		currentMode = fancyMode;
+	} else {
+		currentMode = simpleMode;
+	}
+	currentMode.onStart();
 }
 
 //////////////////////////
@@ -65,7 +92,11 @@ simpleMode.exit = function(){
 window.addEventListener("keydown", onKeyDown, false);
 
 function onKeyDown(ee){
+	console.log("key pressed");
 	switch(ee){  //switch on relevant keycodes.
+		case 32: //space bar
+			changeDemoMode();
+			break;
 		default:
 			break;
 	}
@@ -107,8 +138,9 @@ Star.prototype.update = function(){
 		this.y = utils.getRandomScreenXorY(display.height);
 	}
 }
-
-//// DRAWING/RENDERING /////////////
+///////////////////////////
+//	 DRAWING/RENDERING 	//
+/////////////////////////
 
 function fitDisplayToWindow(){
 	display.width = window.innerWidth;
@@ -237,21 +269,6 @@ function findOffScreenStar(){
 	return starID;
 }
 
-//program execution entry point
-function onStart(){
-	currentMode = simpleMode;
-	currentMode.onStart();
-	update();
-}
-
-
-
-function updateStars(){
-	//update each star's position
-	for(var ii = 0, stars = starfield.length; ii<stars; ii++){
-		starfield[ii].update();
-	}
-}
 
 function spawnStars(){
 	//check to see if we can add more stars, or if some need to be removed.
@@ -272,11 +289,29 @@ function spawnStars(){
 				removeStar();
 			}
 		}
-		console.log("unstableTime: " + unstableTime);
+		//console.log("unstableTime: " + unstableTime);
 		if(unstableTime > unstableTimeTollerance){
 			isStable = true;
 			removeStar();
 		} 
+	}
+}
+
+
+
+//program execution entry point
+function onStart(){
+	currentMode = simpleMode;
+	currentMode.onStart();
+	update();
+}
+
+
+
+function updateStars(){
+	//update each star's position
+	for(var ii = 0, stars = starfield.length; ii<stars; ii++){
+		starfield[ii].update();
 	}
 }
 
