@@ -26,6 +26,7 @@ public class DemoController : MonoBehaviour {
 	private float fpsTimeTracker = 0;
 	private float frameTime = 0;
 	private float currentFPS = 0;
+	private float lastFPS = 0;
 	
 
 	void Start () {
@@ -45,6 +46,10 @@ public class DemoController : MonoBehaviour {
 		currentStars++;
 	}
 
+	void removeStar(){
+		//find a star that is off-screen and remove it.
+	}
+
 	// @citation: Frame counting code inspired from http://stackoverflow.com/questions/4787431/check-fps-in-js
 	void frameTrackerUpdate(){
 		frameTime += (Time.deltaTime - frameTime) / filterStrength;
@@ -52,9 +57,10 @@ public class DemoController : MonoBehaviour {
 		if (fpsTimeTracker >= fpsDisplayInterval) {
 			currentFPS = 1 / frameTime;
 			fpsTimeTracker = 0;
+			lastFPS = currentFPS;
 		}
-
-		frameRateDisplay.text = Mathf.Round(currentFPS) + " fps";
+		frameRateDisplay.text = currentFPS + " fps";
+	//	frameRateDisplay.text = Mathf.Round(currentFPS) + " fps";
 	}
 
 
@@ -64,11 +70,23 @@ public class DemoController : MonoBehaviour {
 		if(spawnerEnabled){
 			starSpawnTimer += Time.deltaTime;
 			if (starSpawnTimer > starSpawnInterval) {
-				starSpawnTimer = 0;
-				for(int kk = 0; kk < starSpawnBatchSize; ++kk){
-					addStar(-spawnValues.x, Random.Range (-spawnValues.z, spawnValues.z));
+
+				if( currentFPS >= FRAME_RATE_TARGET){ //frame rate is above or at target.
+					if(!(lastFPS > currentFPS)){ //frame rate is either stable or improving, and above target
+						//add stars in batch
+						starSpawnTimer = 0;
+						for(int kk = 0; kk < starSpawnBatchSize; ++kk){
+							addStar(-spawnValues.x, Random.Range (-spawnValues.z, spawnValues.z));
+						}
+					} else { //framerate is declining, but above target
+						//add just one star this time.
+						addStar(-spawnValues.x, Random.Range (-spawnValues.z, spawnValues.z));
+					}
+				} else { //frame rate is under target.
+					removeStar();
 				}
 			}
+
 		}
 		StarCounterDisplay.text = "Stars: " + currentStars;
 		frameTrackerUpdate ();
