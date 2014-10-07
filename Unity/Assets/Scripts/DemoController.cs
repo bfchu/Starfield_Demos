@@ -11,9 +11,12 @@ public class DemoController : MonoBehaviour {
 	public bool spawnerEnabled = true;
 	public float starSpawnInterval = 0.2f;
 	public int starSpawnBatchSize = 5;
+	public GUIText StarCounterDisplay;
 
+	private int currentStars;
 	private Quaternion starsRotation = new Quaternion (90, 0, 0, 90);
 	private float starSpawnTimer = 0.0f;
+
 
 	//frame rate counter 
 	public GUIText frameRateDisplay;
@@ -39,6 +42,7 @@ public class DemoController : MonoBehaviour {
 	void addStar(float xPos, float yPos){
 		Vector3 spawnPosition = new Vector3 (xPos, 0.0f, yPos);
 		Instantiate (stars, spawnPosition, starsRotation );
+		currentStars++;
 	}
 
 	// @citation: Frame counting code inspired from http://stackoverflow.com/questions/4787431/check-fps-in-js
@@ -66,7 +70,7 @@ public class DemoController : MonoBehaviour {
 				}
 			}
 		}
-
+		StarCounterDisplay.text = "Stars: " + currentStars;
 		frameTrackerUpdate ();
 	}
 
