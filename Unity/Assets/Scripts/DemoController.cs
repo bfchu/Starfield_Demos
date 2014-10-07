@@ -17,6 +17,8 @@ public class DemoController : MonoBehaviour {
 	private Quaternion starsRotation = new Quaternion (90, 0, 0, 90);
 	private float starSpawnTimer = 0.0f;
 
+	public GameObject starDestroyer; //the off-screen endzone where we pick stars to remove.
+	private CollisionTracker starDestroyerScript;
 
 	//frame rate counter 
 	public GUIText frameRateDisplay;
@@ -31,6 +33,7 @@ public class DemoController : MonoBehaviour {
 
 	void Start () {
 		spawnInitialStars ();
+		starDestroyerScript = starDestroyer.GetComponent ("CollisionTracker") as CollisionTracker;
 	}
 
 	void spawnInitialStars(){
@@ -48,6 +51,11 @@ public class DemoController : MonoBehaviour {
 
 	void removeStar(){
 		//find a star that is off-screen and remove it.
+		if (starDestroyerScript.currentTarget != null) {
+			Destroy (starDestroyerScript.currentTarget.gameObject);
+			//Debug.Log ("kabooom!");
+			currentStars--;
+		}
 	}
 
 	// @citation: Frame counting code inspired from http://stackoverflow.com/questions/4787431/check-fps-in-js

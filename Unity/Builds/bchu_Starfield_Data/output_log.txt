@@ -10,7 +10,7 @@ Platform assembly: C:\Users\Administrator\Documents\GitHub\Starfield_Demos\Unity
 Loading C:\Users\Administrator\Documents\GitHub\Starfield_Demos\Unity\Builds\bchu_Starfield_Data\Managed\UnityEngine.dll into Unity Child Domain
 Platform assembly: C:\Users\Administrator\Documents\GitHub\Starfield_Demos\Unity\Builds\bchu_Starfield_Data\Managed\Assembly-CSharp.dll (this message is harmless)
 Loading C:\Users\Administrator\Documents\GitHub\Starfield_Demos\Unity\Builds\bchu_Starfield_Data\Managed\Assembly-CSharp.dll into Unity Child Domain
-- Completed reload, in  0.029 seconds
+- Completed reload, in  0.028 seconds
 desktop: 1920x1080 60Hz; virtual: 3520x1080 at 0,0
 <RI> Initializing input.
 <RI> Input initialized.
