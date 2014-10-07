@@ -1,19 +1,23 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class DemoController : MonoBehaviour {
+public class ParticlesController : MonoBehaviour {
 	
-	public GameObject stars;
+	private ParticleSystem.Particle[] stars;
+
 	public int numStars;
 	public Vector3 spawnValues;
-//	public float minSpeed;
-//	public float maxSpeed;
+	public float minSpeed;
+	public float maxSpeed;
+	public float scaleMin;
+	public float scaleMax;
+
 	public bool spawnerEnabled = true;
 	public float starSpawnInterval = 0.2f;
 	public int starSpawnBatchSize = 5;
 	public GUIText StarCounterDisplay;
 
-	private int currentStars;
+
 	private Quaternion starsRotation = new Quaternion (90, 0, 0, 90);
 	private float starSpawnTimer = 0.0f;
 
@@ -38,23 +42,34 @@ public class DemoController : MonoBehaviour {
 
 	void spawnInitialStars(){
 		//spawn a collection of stars at random locations with random speeds, scale their size and brightness with their ratio to maxSpeed.
+		stars = new ParticleSystem.Particle[numStars];
 		for (int ii = 0; ii < numStars; ++ii) {
-			addStar(Random.Range (-spawnValues.x, spawnValues.x), Random.Range (-spawnValues.z, spawnValues.z));
+			//give them a random position;
+			stars[ii].position = new Vector3(Random.Range (-spawnValues.x, spawnValues.x),0.0f, Random.Range (-spawnValues.z, spawnValues.z));
+			//spawn this star with a random velocity, 
+			float speed = Random.Range (minSpeed, maxSpeed);
+			stars[ii].velocity = transform.right * speed;
+			//scale its size and color by its ratio to maxSpeed.
+			float distance = stars[ii].velocity.x / maxSpeed;
+			float scale = Mathf.Max (scaleMin, scaleMax * distance);
+			stars[ii].color = new Color(1,1,1,1);
+			stars[ii].size = scale;
+			//addStar(Random.Range (-spawnValues.x, spawnValues.x), Random.Range (-spawnValues.z, spawnValues.z));
 		}
 	}
 
 	void addStar(float xPos, float yPos){
 		Vector3 spawnPosition = new Vector3 (xPos, 0.0f, yPos);
-		Instantiate (stars, spawnPosition, starsRotation );
-		currentStars++;
+		//stars [stars.Length].position = spawnPosition;
+
 	}
 
 	void removeStar(){
 		//find a star that is off-screen and remove it.
 		if (starDestroyerScript.currentTarget != null) {
-			Destroy (starDestroyerScript.currentTarget.gameObject);
+			//TODO: remove star;
+			//Destroy (starDestroyerScript.currentTarget.gameObject);
 			//Debug.Log ("kabooom!");
-			currentStars--;
 		}
 	}
 
@@ -92,12 +107,12 @@ public class DemoController : MonoBehaviour {
 						starSpawnTimer = 0;
 					}
 				} else { //frame rate is under target.
-					removeStar();
+					//removeStar();
 				}
 			}
 
 		}
-		StarCounterDisplay.text = "Stars: " + currentStars;
+		StarCounterDisplay.text = "Stars: " + stars.Length;
 		frameTrackerUpdate ();
 	}
 
