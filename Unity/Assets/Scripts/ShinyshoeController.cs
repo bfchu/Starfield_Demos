@@ -11,7 +11,10 @@ public class ShinyshoeController : MonoBehaviour {
 
 	public GameObject shinyTrail1;
 	private float trail1Offset = 0.6f;
-
+	public GameObject shinyTrail2;
+	private float trail2Offset = 0;
+	public GameObject shinyTrail3;
+	private float trail3Offset = -0.6f;
 
 	private float musicEnd = 65f;
 	private float escapeSpeed = 0.1f;
@@ -37,6 +40,10 @@ public class ShinyshoeController : MonoBehaviour {
 	void spawnShinyTrails(){
 		Vector3 spawnPosition = new Vector3 (transform.position.x + 1, 0.0f, transform.position.z + trail1Offset);
 		Instantiate(shinyTrail1,spawnPosition,trailsRotations);
+		Vector3 spawnPosition2 = new Vector3 (transform.position.x + 1, 0.0f, transform.position.z + trail2Offset);
+		Instantiate(shinyTrail2,spawnPosition2,trailsRotations);
+		Vector3 spawnPosition3 = new Vector3 (transform.position.x + 1, 0.0f, transform.position.z + trail3Offset);
+		Instantiate(shinyTrail3,spawnPosition3,trailsRotations);
 	}
 
 	void escapeSequence(){
