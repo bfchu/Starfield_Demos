@@ -8,7 +8,10 @@ public class ShinyshoeController : MonoBehaviour {
 	public float amplitude = 1;
 	public float musicChange1;
 	public float musicChange2;
-	private float musicEnd = 65.88;
+
+	private float musicEnd = 65f;
+	private float escapeSpeed = 0.1f;
+	
 	// Use this for initialization
 	void Start () {
 		
@@ -23,8 +26,17 @@ public class ShinyshoeController : MonoBehaviour {
 		}
 	}
 
+	void escapeSequence(){
+		//The ship slides back towards the center and takes off.
+		transform.position = new Vector3 (transform.position.x - escapeSpeed, 1.0f, transform.position.z * 0.98f);
+	}
+
 	// Update is called once per frame
 	void Update () {
-		swingStep ();
+		if (Time.time < musicEnd) {
+			swingStep ();
+		} else {
+			escapeSequence();
+		}
 	}
 }
