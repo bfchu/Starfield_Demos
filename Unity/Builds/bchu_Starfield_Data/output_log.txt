@@ -14,3 +14,9 @@ Loading C:\Users\Administrator\Documents\GitHub\Starfield_Demos\Unity\Builds\bch
 desktop: 1920x1080 60Hz; virtual: 3520x1080 at 0,0
 <RI> Initializing input.
 <RI> Input initialized.
+UnloadTime: 26.515814 ms
+Unloading 2 Unused Serialized files (Serialized files now loaded: 0 / Dirty serialized files: 0)
+
+Unloading 1 unused Assets to reduce memory usage. Loaded Objects now: 161.
+Total: 0.290228 ms (FindLiveObjects: 0.006436 ms CreateObjectMapping: 0.006729 ms MarkObjects: 0.060269 ms  DeleteObjects: 0.002925 ms)
+
