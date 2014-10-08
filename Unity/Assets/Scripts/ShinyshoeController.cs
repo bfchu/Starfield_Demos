@@ -52,9 +52,7 @@ public class ShinyshoeController : MonoBehaviour {
 			transform.position = new Vector3(0.0f,1.0f, Mathf.Sin(shinyTime - musicChange1) * amplitude);
 			spawnShinyTrails ();
 			if(shinyTime >= musicChange2){
-				sweepTime += Time.deltaTime;
-				float lerp = Mathf.PingPong(sweepTime*sweepSpeed, 1)/sweepClamp;
-				backdrop.renderer.material.color = new Color(lerp *shinyColor.r,lerp * shinyColor.g, 0.0f,lerp);
+				colorShift();
 			}
 		}
 	}
@@ -68,6 +66,12 @@ public class ShinyshoeController : MonoBehaviour {
 		Instantiate(shinyTrail3,spawnPosition3,trailsRotations);
 	}
 
+	void colorShift(){
+		sweepTime += Time.deltaTime;
+		float lerp = Mathf.PingPong(sweepTime*sweepSpeed, 1)/sweepClamp;
+		backdrop.renderer.material.color = new Color(lerp *shinyColor.r,lerp * shinyColor.g, 0.0f,lerp);
+	}
+	
 	void escapeSequence(){
 		//The ship slides back towards the center and takes off.
 		transform.position = new Vector3 (transform.position.x - escapeSpeed, 1.0f, transform.position.z * 0.98f);
