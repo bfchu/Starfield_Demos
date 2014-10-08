@@ -6,14 +6,14 @@ public class ShinyshoeController : MonoBehaviour {
 	public float swingPower = 10; //affects the ammount of rotation applied.
 	public float swingSpeed = 1;
 	public float amplitude = 1;
-	public float musicChange1;
+	public float musicChange1; //time stamp of music changes.
 	public float musicChange2;
 
 	public GameObject shinyTrail1;
-	private float trail1Offset = 0.6f;
 	public GameObject shinyTrail2;
-	private float trail2Offset = 0;
 	public GameObject shinyTrail3;
+	private float trail1Offset = 0.6f;
+	private float trail2Offset = 0;
 	private float trail3Offset = -0.6f;
 
 	private float musicEnd = 65f;
@@ -28,7 +28,6 @@ public class ShinyshoeController : MonoBehaviour {
 	
 
 	void Start () {
-
 		endText1.text = "";
 		endText2.text = "";
 		endPrompt.text = "";
@@ -42,8 +41,6 @@ public class ShinyshoeController : MonoBehaviour {
 			transform.position = new Vector3(0.0f,1.0f, Mathf.Sin(shinyTime - musicChange1) * amplitude);
 			spawnShinyTrails ();
 		}
-
-
 	}
 
 	void spawnShinyTrails(){
@@ -58,6 +55,8 @@ public class ShinyshoeController : MonoBehaviour {
 	void escapeSequence(){
 		//The ship slides back towards the center and takes off.
 		transform.position = new Vector3 (transform.position.x - escapeSpeed, 1.0f, transform.position.z * 0.98f);
+
+		//After a bit, start displaying the credits.
 		if (shinyTime > musicEnd + creditsDelay) {
 			endText1.text = "Shiny Shoe Starfield";
 			if(shinyTime > musicEnd + creditsDelay + 1){

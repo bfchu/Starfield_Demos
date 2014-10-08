@@ -6,17 +6,16 @@ public class DemoController : MonoBehaviour {
 	public GameObject stars;
 	public int numStars;
 	public Vector3 spawnValues;
-//	public float minSpeed;
-//	public float maxSpeed;
 	public bool spawnerEnabled = true;
 	public float starSpawnInterval = 0.2f;
 	public int starSpawnBatchSize = 5;
 	public GUIText StarCounterDisplay;
-
+	
 	private int currentStars;
 	private Quaternion starsRotation = new Quaternion (90, 0, 0, 90);
 	private float starSpawnTimer = 0.0f;
 
+	//star remover
 	public GameObject starDestroyer; //the off-screen endzone where we pick stars to remove.
 	private CollisionTracker starDestroyerScript;
 
@@ -37,7 +36,7 @@ public class DemoController : MonoBehaviour {
 	}
 
 	void spawnInitialStars(){
-		//spawn a collection of stars at random locations with random speeds, scale their size and brightness with their ratio to maxSpeed.
+		//spawn a collection of stars at random locations.
 		for (int ii = 0; ii < numStars; ++ii) {
 			addStar(Random.Range (-spawnValues.x, spawnValues.x), Random.Range (-spawnValues.z, spawnValues.z));
 		}
@@ -53,10 +52,10 @@ public class DemoController : MonoBehaviour {
 		//find a star that is off-screen and remove it.
 		if (starDestroyerScript.currentTarget != null) {
 			Destroy (starDestroyerScript.currentTarget.gameObject);
-			//Debug.Log ("kabooom!");
 			currentStars--;
 		}
 	}
+
 
 	// @citation: Frame counting code inspired from http://stackoverflow.com/questions/4787431/check-fps-in-js
 	void frameTrackerUpdate(){

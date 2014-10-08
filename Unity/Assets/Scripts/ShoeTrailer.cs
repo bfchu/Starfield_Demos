@@ -11,13 +11,11 @@ public class ShoeTrailer : MonoBehaviour {
 	void Start () {
 		rigidbody.velocity = new Vector3 (trailSpeed, 0.0f, 0.0f);
 	}
-	
-	// Update is called once per frame
+
 	void Update () {
 		tick += Time.deltaTime;
 		if (tick > lifeTime){
 			Destroy (gameObject);
 		}
-
 	}
 }
