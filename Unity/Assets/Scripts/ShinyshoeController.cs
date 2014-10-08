@@ -11,6 +11,8 @@ public class ShinyshoeController : MonoBehaviour {
 
 	public GameObject backdrop;
 	private Color shinyColor = new Color(219,88,0,255);
+	private Color BLACK = new Color(0,0,0,255);
+	private Color TRANSPARENCY = new Color (0, 0, 0, 0);
 	private float sweepDuration = 4;
 	private float sweepTime = 0;
 
@@ -34,6 +36,7 @@ public class ShinyshoeController : MonoBehaviour {
 	
 
 	void Start () {
+		backdrop.renderer.material.color = TRANSPARENCY;
 		endText1.text = "";
 		endText2.text = "";
 		endText3.text = "";
@@ -49,11 +52,11 @@ public class ShinyshoeController : MonoBehaviour {
 			spawnShinyTrails ();
 			if(shinyTime >= musicChange2){
 				//not working properly, unsure why.
-				/*sweepTime += Time.deltaTime;
-				float lerp = Mathf.Abs(Mathf.Sin(sweepTime/sweepDuration));
-				backdrop.renderer.material.color = new Color(shinyColor.r *lerp, shinyColor.g *lerp, 0, 255);
+				sweepTime += Time.deltaTime;
+				float lerp = Mathf.PingPong(sweepTime, 1);
+				backdrop.renderer.material.color = Color.Lerp(BLACK, shinyColor, lerp);
 				//Debug.Log("red: " + backdrop.renderer.material.color.r + ", green: " + backdrop.renderer.material.color.g);
-				*/
+
 			}
 		}
 	}
