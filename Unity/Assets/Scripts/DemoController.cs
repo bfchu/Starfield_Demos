@@ -21,13 +21,13 @@ public class DemoController : MonoBehaviour {
 
 	//frame rate counter 
 	public GUIText frameRateDisplay;
-	private const int FRAME_RATE_TARGET = 60;
+	private const float FRAME_RATE_TARGET = 0.017f; //in milliseconds
 	public float filterStrength = 20;
 	private float fpsDisplayInterval = 0.5f;
 	private float fpsTimeTracker = 0;
 	private float frameTime = 0;
 	private float currentFPS = 0;
-	private float lastFPS = 0;
+	private float lastDeltaTime = 0;
 	
 
 	void Start () {
@@ -64,7 +64,7 @@ public class DemoController : MonoBehaviour {
 		if (fpsTimeTracker >= fpsDisplayInterval) {
 			currentFPS = 1 / frameTime;
 			fpsTimeTracker = 0;
-			lastFPS = currentFPS;
+			lastDeltaTime = Time.deltaTime;
 		}
 		frameRateDisplay.text = currentFPS + " fps";
 	//	frameRateDisplay.text = Mathf.Round(currentFPS) + " fps";
@@ -77,21 +77,15 @@ public class DemoController : MonoBehaviour {
 		if(spawnerEnabled){
 			starSpawnTimer += Time.deltaTime;
 			if (starSpawnTimer > starSpawnInterval) {
-
-				if( currentFPS >= FRAME_RATE_TARGET){ //frame rate is above or at target.
-					if(!(lastFPS > currentFPS)){ //frame rate is either stable or improving, and above target
-						//add stars in batch
-						starSpawnTimer = 0;
-						for(int kk = 0; kk < starSpawnBatchSize; ++kk){
-							addStar(-spawnValues.x, Random.Range (-spawnValues.z, spawnValues.z));
-						}
-					} else { //framerate is declining, but above target
-						//add just one star this time.
+				if(Time.deltaTime <= FRAME_RATE_TARGET){
+					//add stars in batch
+					starSpawnTimer = 0;
+					for(int kk = 0; kk < starSpawnBatchSize; ++kk){
 						addStar(-spawnValues.x, Random.Range (-spawnValues.z, spawnValues.z));
-						starSpawnTimer = 0;
 					}
-				} else { //frame rate is under target.
+				} else {
 					removeStar();
+					starSpawnTimer = 0;
 				}
 			}
 
